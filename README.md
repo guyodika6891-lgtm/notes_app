@@ -39,5 +39,5 @@ A beautiful, full-featured notes application built with Flask. Capture your thou
 
 1. Clone the repository:
    ```bash
-   git clone https://your_username/notes_app.git
+   git clone https://guyodika6891-lgtm/notes_app.git
    cd notes_app
