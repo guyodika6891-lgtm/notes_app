@@ -25,7 +25,7 @@ A beautiful, full-featured notes application built with Flask. Capture your thou
 
 ## 🚀 Live Demo
 
-🔗 [View Live App](https://notes-app.onrender.com) *(update after deployment)*
+🔗 [View Live App](https://notes-app-j72r.onrender.com/) *(update after deployment)*
 
 ## 🏁 Getting Started
 
