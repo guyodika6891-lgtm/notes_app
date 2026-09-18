@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{{ note.title or "Untitled Note" }}{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div class="flex-grow-1">
+            {% if note.pinned %}
+                <span class="badge mb-2" style="background: linear-gradient(135deg, #f59e0b, #f97316); color: white; padding: 8px 16px;">
+                    <i class="fas fa-thumbtack me-1"></i> Pinned
+                </span>
+            {% endif %}
+            <h2 class="mt-2 mb-0 fw-bold" style="font-size: 2rem;">
+                {% if note.title %}{{ note.title }}{% else %}<em class="text-muted">Untitled</em>{% endif %}
+            </h2>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('edit_note', note_id=note.id) }}" class="btn btn-warning">
+                <i class="fas fa-edit me-1"></i> Edit
+            </a>
+            <a href="{{ url_for('toggle_pin', note_id=note.id) }}" class="btn btn-outline-warning">
+                <i class="fas fa-thumbtack me-1"></i> {% if note.pinned %}Unpin{% else %}Pin{% endif %}
+            </a>
+            <form method="POST" action="{{ url_for('delete_note', note_id=note.id) }}" style="display:inline;">
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Delete this note permanently?')">
+                    <i class="fas fa-trash me-1"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4" style="border-radius: 16px; background: #f8fafc; border: 1px solid #e2e8f0;">
+        <div class="card-body p-4">
+            <p class="mb-0" style="white-space: pre-wrap; font-size: 1.05rem; line-height: 1.7;">{{ note.content }}</p>
+        </div>
+    </div>
+
+    {% if note.tags %}
+        <div class="mb-4">
+            <strong class="text-muted"><i class="fas fa-tags me-1"></i> Tags:</strong><br>
+            <div class="mt-2">
+                {% for tag in note.tags %}
+                    <span class="badge me-1" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca; padding: 8px 16px;">
+                        #{{ tag.name }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="text-muted small mb-4 p-3 rounded" style="background: #f8fafc;">
+        <div><i class="far fa-calendar-plus me-1"></i> Created: {{ note.created_at.strftime('%b %d, %Y at %H:%M') }}</div>
+        <div><i class="far fa-edit me-1"></i> Updated: {{ note.updated_at.strftime('%b %d, %Y at %H:%M') }}</div>
+    </div>
+
+    <a href="{{ url_for('index') }}" class="btn btn-primary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Notes
+    </a>
+{% endblock %}

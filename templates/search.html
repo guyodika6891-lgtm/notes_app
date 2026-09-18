@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Search Notes{% endblock %}
+
+{% block content %}
+    <div class="text-center mb-4">
+        <div style="font-size: 3rem;">🔍</div>
+        <h2 class="fw-bold mt-2">Search Notes</h2>
+        <p class="text-muted">Find notes by title or content</p>
+    </div>
+
+    <form method="GET" action="{{ url_for('search') }}" class="mb-4">
+        <div class="input-group input-group-lg">
+            <span class="input-group-text bg-white border-end-0" style="border-radius: 12px 0 0 12px;">
+                <i class="fas fa-search text-muted"></i>
+            </span>
+            <input type="text" name="q" class="form-control border-start-0"
+                   value="{{ query or '' }}" placeholder="Type to search..." autofocus>
+            <button class="btn btn-primary px-4" type="submit">Search</button>
+        </div>
+    </form>
+
+    {% if query %}
+        <p class="text-muted">
+            Found <strong class="text-primary">{{ results|length }}</strong> result(s) for
+            "<strong>{{ query }}</strong>"
+        </p>
+
+        {% if results %}
+            <div class="row g-3">
+                {% for note in results %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100"
+                             style="{% if note.pinned %}background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%); border: 2px solid #f59e0b;{% else %}background: white; border: 1px solid #f1f5f9;{% endif %}">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">
+                                    {% if note.title %}{{ note.title }}{% else %}<em class="text-muted">Untitled</em>{% endif %}
+                                    {% if note.pinned %}<i class="fas fa-thumbtack text-warning ms-1"></i>{% endif %}
+                                </h5>
+                                <p class="card-text small text-secondary">
+                                    {{ note.content[:120] }}{% if note.content|length > 120 %}...{% endif %}
+                                </p>
+
+                                {% if note.tags %}
+                                    <div>
+                                        {% for tag in note.tags %}
+                                            <span class="badge" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca;">
+                                                #{{ tag.name }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <a href="{{ url_for('view_note', note_id=note.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye me-1"></i> View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div style="font-size: 4rem;">🔍</div>
+                <h4 class="mt-3 fw-bold">No matching notes</h4>
+                <p class="text-muted">Try a different search term.</p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5 text-muted">
+            <div style="font-size: 4rem;">💡</div>
+            <p class="mt-3">Start typing to search your notes.</p>
+        </div>
+    {% endif %}
+{% endblock %}

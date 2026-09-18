@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}New Note{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-4">
+                <div style="font-size: 3rem;">✍️</div>
+                <h2 class="fw-bold mt-2">Create New Note</h2>
+                <p class="text-muted">Write down your thoughts</p>
+            </div>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="title" class="form-label">
+                        <i class="fas fa-heading me-1 text-primary"></i> Title
+                        <small class="text-muted">(optional)</small>
+                    </label>
+                    <input type="text" class="form-control" id="title" name="title"
+                           value="{{ title or '' }}" placeholder="Give your note a title...">
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">
+                        <i class="fas fa-align-left me-1 text-primary"></i> Content *
+                    </label>
+                    <textarea class="form-control" id="content" name="content" rows="10"
+                              placeholder="Write your note here..." required>{{ content or '' }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="tags" class="form-label">
+                        <i class="fas fa-tags me-1 text-primary"></i> Tags
+                    </label>
+                    <input type="text" class="form-control" id="tags" name="tags"
+                           value="{{ tags_input or '' }}"
+                           placeholder="work, urgent, personal">
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Separate multiple tags with commas
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="submit" class="btn btn-success flex-fill py-3">
+                        <i class="fas fa-save me-1"></i> Save Note
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary flex-fill py-3">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

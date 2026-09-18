@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Note{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-4">
+                <div style="font-size: 3rem;">✏️</div>
+                <h2 class="fw-bold mt-2">Edit Note</h2>
+                <p class="text-muted">Update your note</p>
+            </div>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="title" class="form-label">
+                        <i class="fas fa-heading me-1 text-primary"></i> Title
+                        <small class="text-muted">(optional)</small>
+                    </label>
+                    <input type="text" class="form-control" id="title" name="title"
+                           value="{{ note.title or '' }}" placeholder="Give your note a title...">
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">
+                        <i class="fas fa-align-left me-1 text-primary"></i> Content *
+                    </label>
+                    <textarea class="form-control" id="content" name="content" rows="10" required>{{ note.content }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="tags" class="form-label">
+                        <i class="fas fa-tags me-1 text-primary"></i> Tags
+                    </label>
+                    <input type="text" class="form-control" id="tags" name="tags"
+                           value="{{ note.tags|map(attribute='name')|join(', ') }}"
+                           placeholder="work, urgent, personal">
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Separate with commas (replaces all existing tags)
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="submit" class="btn btn-success flex-fill py-3">
+                        <i class="fas fa-save me-1"></i> Update Note
+                    </button>
+                    <a href="{{ url_for('view_note', note_id=note.id) }}" class="btn btn-secondary flex-fill py-3">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

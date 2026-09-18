@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}My Notes{% endblock %}
+
+{% block content %}
+    {% if notes is none %}
+        <!-- Welcome Screen -->
+        <div class="text-center py-5">
+            <div style="font-size: 5rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📝</div>
+            <h1 class="fw-bold mt-3 mb-2" style="font-size: 2.5rem;">Welcome to Notes App</h1>
+            <p class="lead text-muted mb-4">Capture your thoughts, ideas, and reminders — all in one place.</p>
+            <a href="{{ url_for('register') }}" class="btn btn-success btn-lg me-2">
+                <i class="fas fa-user-plus me-1"></i> Get Started
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt me-1"></i> Login
+            </a>
+        </div>
+
+        <div class="row g-4 mt-5">
+            <div class="col-md-4">
+                <div class="card h-100 text-center" style="border-top: 4px solid #6366f1;">
+                    <div class="card-body p-4">
+                        <div style="font-size: 3rem;">📝</div>
+                        <h5 class="card-title mt-3 fw-bold">Create Notes</h5>
+                        <p class="card-text text-muted small">Jot down ideas quickly and easily</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center" style="border-top: 4px solid #10b981;">
+                    <div class="card-body p-4">
+                        <div style="font-size: 3rem;">🏷️</div>
+                        <h5 class="card-title mt-3 fw-bold">Tag & Organize</h5>
+                        <p class="card-text text-muted small">Categorize with custom tags</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center" style="border-top: 4px solid #f59e0b;">
+                    <div class="card-body p-4">
+                        <div style="font-size: 3rem;">📌</div>
+                        <h5 class="card-title mt-3 fw-bold">Pin Important</h5>
+                        <p class="card-text text-muted small">Keep key notes on top</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Logged in: Notes grid -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h2 class="mb-0"><i class="fas fa-sticky-note text-primary me-2"></i>My Notes</h2>
+                <small class="text-muted">{{ notes|length }} note(s)</small>
+            </div>
+            <a href="{{ url_for('new_note') }}" class="btn btn-success">
+                <i class="fas fa-plus me-1"></i> New Note
+            </a>
+        </div>
+
+        <!-- Search bar -->
+        <form method="GET" action="{{ url_for('search') }}" class="mb-4">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text bg-white border-end-0" style="border-radius: 12px 0 0 12px;">
+                    <i class="fas fa-search text-muted"></i>
+                </span>
+                <input type="text" name="q" class="form-control border-start-0"
+                       placeholder="Search your notes...">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+
+        {% if notes %}
+            <div class="row g-3">
+                {% for note in notes %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 {% if note.pinned %}{% endif %}"
+                             style="{% if note.pinned %}background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%); border: 2px solid #f59e0b;{% else %}background: white; border: 1px solid #f1f5f9;{% endif %}">
+                            {% if note.pinned %}
+                                <div class="card-header py-2" style="background: linear-gradient(135deg, #f59e0b, #f97316); color: white; border-radius: 16px 16px 0 0;">
+                                    <small><i class="fas fa-thumbtack me-1"></i> Pinned</small>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">
+                                    {% if note.title %}{{ note.title }}{% else %}<em class="text-muted">Untitled</em>{% endif %}
+                                </h5>
+                                <p class="card-text small text-secondary">
+                                    {{ note.content[:120] }}{% if note.content|length > 120 %}...{% endif %}
+                                </p>
+
+                                {% if note.tags %}
+                                    <div class="mb-2">
+                                        {% for tag in note.tags %}
+                                            <span class="badge" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca;">
+                                                #{{ tag.name }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <small class="text-muted">
+                                    <i class="far fa-clock me-1"></i>{{ note.updated_at.strftime('%b %d, %Y') }}
+                                </small>
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 d-flex gap-1 flex-wrap pt-0">
+                                <a href="{{ url_for('view_note', note_id=note.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('edit_note', note_id=note.id) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url_for('toggle_pin', note_id=note.id) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="fas fa-thumbtack"></i> {% if note.pinned %}Unpin{% else %}Pin{% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div style="font-size: 5rem;">📭</div>
+                <h4 class="mt-3 fw-bold">No notes yet!</h4>
+                <p class="text-muted mb-4">Start by creating your first note.</p>
+                <a href="{{ url_for('new_note') }}" class="btn btn-success btn-lg">
+                    <i class="fas fa-plus me-1"></i> Create Your First Note
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
